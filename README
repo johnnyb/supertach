@@ -1,0 +1,75 @@
+# Supertach - the coolest and best Rails 3 attachment plugin
+#
+# Author::    Jonathan Bartlett
+# Copyright:: Copyright 2011 New Medio ( http://www.newmedio.com )
+# License::   Distributed under the same terms as ruby
+#
+# Supertach is a Rails 3 attachment plugin.  It has many features to make your life better.
+# Unlike other attachment programs, it does not require that you pre-specify thumbnail sizes.
+# Thumbnails are part of the view, and therefore to specify thumbnail sizes in model code is
+# over-mixing between the model and the view.  In supertach, just call 
+# attachment.thumbnail!(:width => 150) to get a 150-pixel thumbnail.  Other attachment programs
+# require that you decide on a file storage mechanism up-front and then stick with it.  It defaults
+# to local filesystem storage, but lets say that someone uploaded a 3-gig video that you think would
+# be better handled by S3.  If you've named your s3 storage "s3", then you can do 
+# attachment.migrate_storage!("s3") and viola! it's now served up from s3 instead of the filesystem.
+#
+# The big feature that is implemented is that Attachment is a class of it's own.  You don't "add it"
+# to other classes the same way you would Attachment-fu or Paperclip.  Instead, attachment is a
+# poly-polymorphic associate (yes, I made up that term) which allows for all sorts of coolness.  Let's
+# say that I am selling homes, and my Home class needs to attachments - an interior photo and an exterior
+# photo.  With Supertach, here's what you do:
+#
+#   class Home < ActiveRecord::Base
+#     has_one_attachment :interior_photo
+#     has_one_attachment :exterior_photo
+#   end
+# 
+# That's it!
+#
+# In addition, each attachment already comes with several generic fields that you can use for whatever
+# you like, including: name, description, url, and extra_data.  You can use them or not use them, it's
+# your choice.  If you choose *not* to use them, then it is super-easy to attach stuff:
+#
+#   <%= form_for @home do |f|  %>
+#     <%= f.file_field :interior_photo_upload %>
+#     <%= f.file_field :exterior_photo_upload %>
+#   <% end %>
+#
+# Then to do the attaching, just use @home.update_attributes(params[:home])
+#
+# If you want to use them, the just use it as a regular has_one association, and set uploaded_data to 
+# be the file upload, like this:
+#
+#   class HomeController < ApplicationController
+#     def whatever
+#       @home = Home.find(params[:id])
+#       data = params[:my_file_field]
+#       @home.create_interior_photo(:name => "My Name", :description => "Blah", :uploaded_data => data)
+#     end
+#   end
+#
+# Not only that, but you can have collections of attachments.  Let's say that instead of one interior
+# image, you wanted a bunch!  Then, just do:
+#
+#   class Home
+#     has_many_attachments :interior_photos
+#     has_one_attachment :exterior_photo
+#   end
+# 
+# Now interior_photos acts just like a has_many relationship, but with attachments!
+#
+# Another cool part of Supertach is the ability to manage representations (a thumbnail is
+# an example of a representation).  Supertach
+# does not assume anything about a representation, or how you want it.  You can do video,
+# image, sound, or any other kind of representations for files.  The default representation
+# manager makes external calls out to ImageMagick for resizing widths.  But, literally,
+# the representation manager is less than 20 lines long, so if it doesn't work for you,
+# you can easily replace it!
+#
+# To setup Supertach, just do the following:
+#
+#   rails plugin install PATH_TO_SUPERTACH
+#   rails generate supertach_initialize
+#   rake db:migrate
+#
