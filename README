@@ -84,4 +84,5 @@
 # the representation manager is less than 20 lines long, so if it doesn't work for you,
 # you can easily replace it!
 #
-
+# To get the standard thumbnailer to work, be sure you have ImageMagick installed and in
+# the PATH used by your rails process.  It does not require any external library at this time.
