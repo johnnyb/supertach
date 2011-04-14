@@ -4,7 +4,16 @@
 # Copyright:: Copyright 2011 New Medio ( http://www.newmedio.com )
 # License::   Distributed under the same terms as ruby
 #
-# Supertach is a Rails 3 attachment plugin.  It has many features to make your life better.
+# To setup Supertach, just do the following:
+#
+#   rails plugin install git@github.com:johnnyb/supertach.git
+#   rails generate supertach_initialize
+#   rake db:migrate
+#
+# Supertach is a Rails 3 attachment plugin.  It has many features to make your life better. 
+# It doesn't require you to make a new class - it comes with one prepackaged - Attachment.
+# You just link to the attachment using an active record extension.  See below for examples.
+#
 # Unlike other attachment programs, it does not require that you pre-specify thumbnail sizes.
 # Thumbnails are part of the view, and therefore to specify thumbnail sizes in model code is
 # over-mixing between the model and the view.  In supertach, just call 
@@ -59,6 +68,14 @@
 # 
 # Now interior_photos acts just like a has_many relationship, but with attachments!
 #
+# Let's now display our attachments:
+#
+#   <% @home = Home.find(params[:id]) %>
+#   <% @home.interior_photos.each do |photo| %>
+#     <%= photo.name %>: <br />
+#     <%= link_to(image_tag(photo.thumbnail!(:width => 50)), photo.public_url %> <br />
+#   <% end %>
+#
 # Another cool part of Supertach is the ability to manage representations (a thumbnail is
 # an example of a representation).  Supertach
 # does not assume anything about a representation, or how you want it.  You can do video,
@@ -67,9 +84,4 @@
 # the representation manager is less than 20 lines long, so if it doesn't work for you,
 # you can easily replace it!
 #
-# To setup Supertach, just do the following:
-#
-#   rails plugin install PATH_TO_SUPERTACH
-#   rails generate supertach_initialize
-#   rake db:migrate
-#
+
