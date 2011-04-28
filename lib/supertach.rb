@@ -8,7 +8,7 @@ class FilesystemStorageHandler
 	def store(key, fdata, opts = {})
 		block_size = opts[:blocksize] || 1024
 		FileUtils.mkdir_p(dirname_for(key))
-		fh = File.open(filename_for(key), "w")
+		fh = File.open(filename_for(key), "wb")
 		#IO.copy_stream(fdata, fh) - apparently this is only for newer ruby versions
 		while(str = fdata.read(block_size))
 			fh.write(str)
