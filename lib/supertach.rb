@@ -70,7 +70,15 @@ class ThumbnailRepresentation
 		tmp_f.close
 
 		discard = `convert #{orig_fname} -resize #{opts[:width]}x #{tmp_f.path} 2>&1`
-		RAILS_DEFAULT_LOGGER.warn("output: #{discard}")
+		if opts[:fill] && opts[:width] && opts[:height]
+			# Do ImageMagick Fill Area ( http://www.imagemagick.org/Usage/resize/#fill )
+			discard = `convert #{orig_fname} -resize #{opts[:width]}x#{opts[:height]}^ -gravity center -extent #{opts[:width]}x#{opts[:height]} #{tmp_f.path} 2>&1`
+		else
+			# Do a regular resize
+			discard = `convert #{orig_fname} -resize #{opts[:width]}x#{opts[:height]} #{tmp_f.path} 2>&1`
+		end
+
+		#Rails.logger.warn("output: #{discard}")
 
 		tmp_f.open
 
